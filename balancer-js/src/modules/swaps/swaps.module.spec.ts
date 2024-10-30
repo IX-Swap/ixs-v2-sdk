@@ -157,7 +157,7 @@ describe('swaps module', () => {
         recipient,
         swapInfo,
         kind: SwapType.SwapExactIn,
-        deadline: BigNumber.from('0'),
+        deadline: BigNumber.from('0').toString(),
         maxSlippage: 1,
       });
     };
@@ -258,7 +258,7 @@ describe('swaps module', () => {
     const amount = hardhat.ethers.utils.parseEther('1');
     const gasPrice = hardhat.ethers.utils.parseUnits('50', 'gwei');
     const maxPools = 4;
-    const deadline = MaxUint256;
+    const deadline = MaxUint256.toString();
     const maxSlippage = 10;
 
     let signer: SignerWithAddress, recipient: SignerWithAddress;
@@ -286,6 +286,36 @@ describe('swaps module', () => {
         kind: SwapType.SwapExactIn,
         deadline,
         maxSlippage,
+      });
+
+      const receipt = await (
+        await signer.sendTransaction({ to, data, value })
+      ).wait();
+
+      expect(receipt.status).to.be.eql(1);
+    });
+    it('should work with rwaSwap', async () => {
+      const swapInfo: SwapInfo = await swaps.findRouteGivenIn({
+        tokenIn,
+        tokenOut,
+        amount,
+        gasPrice,
+        maxPools,
+      });
+
+      const { to, data, value } = swaps.buildSwap({
+        userAddress: signer.address,
+        recipient: recipient.address,
+        swapInfo,
+        kind: SwapType.SwapExactIn,
+        deadline,
+        maxSlippage,
+        authorization: {
+          operator: '0xCd7d47C8ec1Ea5dBF4c65Db4b21De48BD519CAB6',
+          v: 0,
+          r: '0x0000000000000000000000000000000000000000000000000000000000000000',
+          s: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        },
       });
 
       const receipt = await (

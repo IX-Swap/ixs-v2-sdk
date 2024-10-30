@@ -12,7 +12,7 @@ class SingleSwapBuilder {
   limit?: BigNumberish;
   deadline?: string;
   relayer: SwapRelayer;
-  readonly functionName = 'swap';
+  readonly functionName: string = 'swap';
 
   /**
    * Building swap transaction data
@@ -144,7 +144,7 @@ class SingleSwapBuilder {
     return this.relayer.address;
   }
 
-  private fragment(): JsonFragment[] {
+  protected fragment(): JsonFragment[] {
     return swapFragment(this.relayer).filter(
       (f) => f.name === this.functionName
     );

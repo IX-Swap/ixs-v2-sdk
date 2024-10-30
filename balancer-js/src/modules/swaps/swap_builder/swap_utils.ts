@@ -97,7 +97,7 @@ function swapFragment(relayer: SwapRelayer): JsonFragment[] {
       (f) =>
         f.type === 'function' &&
         f.name &&
-        ['swap', 'batchSwap'].includes(f.name)
+        ['swap', 'rwaSwap', 'batchSwap'].includes(f.name)
     );
 }
 
