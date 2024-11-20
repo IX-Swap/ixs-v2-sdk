@@ -64,6 +64,8 @@ export type BatchSwap = {
   outputReferences?: { index: BigNumberish; key: BigNumberish }[];
 };
 
+export type RwaBatchSwap = BatchSwap & { authorization: RwaAuthorizationData };
+
 export interface SwapInput {
   tokenIn: string;
   tokenOut: string;

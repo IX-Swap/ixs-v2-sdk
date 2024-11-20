@@ -294,7 +294,7 @@ describe('swaps module', () => {
 
       expect(receipt.status).to.be.eql(1);
     });
-    it('should work with rwaSwap', async () => {
+    it('should work with rwaBatchSwap', async () => {
       const swapInfo: SwapInfo = await swaps.findRouteGivenIn({
         tokenIn,
         tokenOut,
