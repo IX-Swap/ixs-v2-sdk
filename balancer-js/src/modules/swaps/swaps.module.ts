@@ -30,6 +30,7 @@ import {
 import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
 import { GraphQLArgs } from '@/lib/graphql';
+import { RwaBatchSwapBuilder } from './swap_builder/rwa_batch_swap_builder';
 
 const buildRouteDefaultOptions = {
   maxPools: 4,
@@ -155,17 +156,22 @@ export class Swaps {
     kind,
     deadline,
     maxSlippage,
+    authorization,
   }: BuildTransactionParameters): SwapAttributes {
     if (!this.chainId) throw 'Missing network configuration';
 
     // one vs batch (gas cost optimisation when using single swap)
-    const builder =
-      swapInfo.swaps.length > 1
-        ? new BatchSwapBuilder(swapInfo, kind, this.chainId)
-        : new SingleSwapBuilder(swapInfo, kind, this.chainId);
+    const builder = authorization
+      ? new RwaBatchSwapBuilder(swapInfo, kind, this.chainId)
+      : swapInfo.swaps.length > 1
+      ? new BatchSwapBuilder(swapInfo, kind, this.chainId)
+      : new SingleSwapBuilder(swapInfo, kind, this.chainId);
     builder.setFunds(userAddress, recipient);
     builder.setDeadline(deadline);
     builder.setLimits(maxSlippage);
+    if (authorization && builder instanceof RwaBatchSwapBuilder) {
+      builder.setAuthorization(authorization);
+    }
 
     const to = builder.to();
     const { functionName } = builder;

@@ -43,6 +43,8 @@ export type Swap = {
   outputReference?: BigNumberish;
 };
 
+export type RwaSwap = Swap & { authorization: RwaAuthorizationData };
+
 export type BatchSwapStep = {
   poolId: string;
   assetInIndex: number;
@@ -61,6 +63,8 @@ export type BatchSwap = {
   value?: BigNumberish;
   outputReferences?: { index: BigNumberish; key: BigNumberish }[];
 };
+
+export type RwaBatchSwap = BatchSwap & { authorization: RwaAuthorizationData };
 
 export interface SwapInput {
   tokenIn: string;
@@ -103,7 +107,15 @@ export interface BuildTransactionParameters {
   kind: SwapType;
   deadline: string;
   maxSlippage: number;
+  authorization?: RwaAuthorizationData;
 }
+
+export type RwaAuthorizationData = {
+  operator: string;
+  v: number;
+  r: string;
+  s: string;
+};
 
 export interface SwapTransactionRequest {
   to: string;
